@@ -2,10 +2,12 @@
 #define WORLD_H
 
 #include <GLFW/glfw3.h>
+#include <sstream>
 #include "place.h"
 #include "player.h"
 #include "camera.h"
 #include "ballmanager.h"
+#include "font2d.h"
 
 class World {
 private:
@@ -16,6 +18,7 @@ private:
 	Player* player;				// 玩家
 	Camera* camera;				// 摄像机
 	BallManager* ball;			// 小球
+    font2d fnt;
 
 	// 阴影
 	GLuint depthMap;
@@ -38,11 +41,12 @@ public:
 		place = new Place(windowSize, camera);
 		player = new Player(windowSize, camera);
 		ball = new BallManager(windowSize, camera);
+        fnt.init("res/fonts/Xefus.ttf", 45,  windowSize.x,  windowSize.y); 
 
 		glGenFramebuffers(1, &depthMapFBO);
 		glGenTextures(1, &depthMap);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 2048, 2048, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -61,16 +65,25 @@ public:
 		}
 		place->Update();
 	}
-	// 渲染模型
+
+	string IntToString(int a)
+    {
+    ostringstream temp;
+    temp << a;
+    return temp.str();
+    }
+
 	void Render() {
 		RenderDepth();
 		player->Render();
 		place->RoomRender(NULL, depthMap);
 		place->SunRender();
 		ball->Render(NULL, depthMap);
+        int score = GetScore();
+        fnt.RenderText(IntToString(score),10.0f, 1750.0f, 1.0f, glm::vec3(1.1f, 0.7f, 0.6f));
 	}
 
-	GLuint GetScore() {
+	int GetScore() {
 		return ball->GetScore();
 	}
 	// 判断游戏是否结束
@@ -92,7 +105,7 @@ private:
 		simpleDepthShader->Bind();
 		simpleDepthShader->SetMat4("lightSpaceMatrix", lightSpaceMatrix);
 
-		glViewport(0, 0, 1024, 1024);
+		glViewport(0, 0, 2048, 2048);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		place->RoomRender(simpleDepthShader);
 		ball->Render(simpleDepthShader);

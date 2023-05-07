@@ -1,8 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <glad/glad.h>
-#include "texture.h"
+#include "glad.h"
+#include "TextureLoader.h"
 #include "shader.h"
 #include "model.h"
 #include "camera.h"
@@ -15,8 +15,8 @@ private:
 	vec3 gunPos;						// 枪的位置坐标
 	Shader* gunShader;
 	mat4 gunModel;						// 枪模型位置变换矩阵
-	Texture* diffuseMap;				// 漫反射贴图
-	Texture* specularMap;				// 镜面反射贴图
+	GLuint diffuseMap;				// 漫反射贴图
+	GLuint specularMap;				// 镜面反射贴图
 	float gunRecoil;					// 后座力
 	// 准星
 	Model* dot;							
@@ -79,9 +79,9 @@ public:
 		gunShader->SetMat4("model", gunModel);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, diffuseMap->GetId());
+		glBindTexture(GL_TEXTURE_2D, diffuseMap);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, specularMap->GetId());
+		glBindTexture(GL_TEXTURE_2D, specularMap);
 
 		glBindVertexArray(gun->GetVAO());
 		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(gun->GetIndices().size()), GL_UNSIGNED_INT, 0);
@@ -97,8 +97,9 @@ private:
 	}
 	// 加载纹理
 	void LoadTexture() {
-		diffuseMap = new Texture("res/texture/gun-diffuse-map.jpg");
-		specularMap = new Texture("res/texture/gun-specular-map.jpg");
+        TextureLoader Tex;
+		diffuseMap = Tex.loadTexture("res/texture/gun-diffuse-map.jpg");
+		specularMap = Tex.loadTexture("res/texture/gun-specular-map.jpg");
 	}
 	// 加载着色器
 	void LoadShader() {

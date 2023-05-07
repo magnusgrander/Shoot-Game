@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include "glad.h"
 #include <GLFW/glfw3.h>
 #include "world.h"
 
@@ -21,10 +21,10 @@ int main() {
 
     srand(time(0));
 
-    GLuint gameModel = 1;
-    cout << "------------请选择游戏模式：1、休闲模式，2、挑战模式（输入模式前的序号即可）------------\n";
-    cin >> gameModel;
-    cout << "\n";
+    GLuint gameModel = 2;
+    cout << "------------Loading game models------------\n";
+    //cin >> gameModel;
+    //cout << "\n";
         
     OpenWindow();
     PrepareOpenGL();

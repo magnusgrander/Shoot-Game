@@ -1,9 +1,9 @@
 #ifndef PLACE_H
 #define PLACE_H
 
-#include <glad/glad.h>
+#include "glad.h"
 #include "model.h"
-#include "texture.h"
+#include "TextureLoader.h"
 #include "shader.h"
 #include "camera.h"
 
@@ -12,7 +12,7 @@ private:
 	vec2 windowSize;
 	// 房间
 	Model* room;
-	Texture* roomTexture;
+	GLuint roomTexture;
 	Shader* roomShader;
 
 	// 太阳
@@ -20,7 +20,7 @@ private:
 	vec3 lightPos;							// 光源位置
 	mat4 lightSpaceMatrix;					// 将顶点世界坐标转换为以光源为中心的坐标
 	Shader* sunShader;
-
+   
 	Camera* camera;
 	// 模型变换矩阵
 	mat4 model;
@@ -36,7 +36,7 @@ public:
 		this->lightSpaceMatrix = lightProjection * lightView;
 		LoadModel();
 		LoadTexture();
-		LoadShader();
+		LoadShader();        
 	}
 	// 更新变换矩阵
 	void Update() {
@@ -57,7 +57,7 @@ public:
 		}
 		shader->SetMat4("model", model);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, roomTexture->GetId());
+		glBindTexture(GL_TEXTURE_2D, roomTexture);
 		if (depthMap != -1) {
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, depthMap);
@@ -65,7 +65,7 @@ public:
 		glBindVertexArray(room->GetVAO());
 		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(room->GetIndices().size()), GL_UNSIGNED_INT, 0);
 		shader->Unbind();
-		glBindVertexArray(0);
+		glBindVertexArray(0);       
 	}
 	// 渲染太阳
 	void SunRender() {
@@ -84,10 +84,12 @@ private:
 	void LoadModel() {
 		room = new Model("res/model/room.obj");
 		sun = new Model("res/model/sun.obj");
+        
 	}
 	// 加载纹理
 	void LoadTexture() {
-		roomTexture = new Texture("res/texture/wall.jpg");
+        TextureLoader Tex;
+		roomTexture = Tex.loadTexture("res/texture/wall.jpg");
 	}
 	// 加载着色器
 	void LoadShader() {

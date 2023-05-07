@@ -67,7 +67,7 @@ public:
 				}
 				else {
 					number--;
-					score++;
+					score = score + 10;
 				}
 			}
 			position = temp;
