@@ -18,3 +18,9 @@
 2. 将library中的include文件夹添加至附加包含目录
 3. 将library中的lib文件夹添加至附加库目录
 4. 运行代码
+
+This is a Linux version converted from windows.
+Could be compiled with g++ with all usuall
+includes.
+
+
