@@ -21,6 +21,9 @@
 
 This is a Linux version converted from windows.
 Could be compiled with g++ with all usuall
-includes.
+includes. Added is also a hit counter
+with a loaded ttf font and a font shader.
+
+
 
 
